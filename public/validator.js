@@ -1,19 +1,19 @@
-(function( $ ) {
+(function ($) {
+	"use strict";
+	var namespace = '.validator',
 
-	var namespace = '.validator';
-
-	var defaults = {
-		events                  : null,
-		selector                : null,
-		preventDefault          : false,
-		preventDefaultIfInvalid : false,
-		callback                : function( valid ) {
-			//
-		},
-		done                    : function( valid ) {
-			//
-		}
-	};
+		defaults = {
+			events                  : null,
+			selector                : null,
+			preventDefault          : false,
+			preventDefaultIfInvalid : false,
+			callback                : function( valid ) {
+				//
+			},
+			done                    : function( valid ) {
+				//
+			}
+		};
 
 	$.fn.validator = function( method ) {
 		
@@ -60,7 +60,7 @@
 
 			});
 
-		},
+		}
 
 	};
 
@@ -68,7 +68,8 @@
 
 		parseRules : function( rules ) {
 
-			var validations = [];
+			var validations = [],
+				rule;
 
 			$.each( rules.split( "|" ), function( idx, value ) {
 
@@ -107,7 +108,7 @@
 						return true;
 					}
 
-					valid &= (_methods[rule.method] ?
+					valid = valid && (_methods[rule.method] ?
 						_methods[rule.method]( name, value, rule.params ) :
 						false);
 
@@ -115,7 +116,7 @@
 
 				callback( this, valid );
 
-				allValid &= valid;
+				allValid = allValid && valid;
 
 			});
 
@@ -125,23 +126,24 @@
 
 		validatable : function( rule, attribute, value ) {
 
-			return this.validate_required( attribute, value )
-				|| this.implicit( rule );
+			return this.validate_required( attribute, value ) ||
+				this.implicit( rule );
 
 		},
 
 		implicit : function( rule ) {
 
-			return rule.method === "validate_required"
-				|| rule.method === "validate_required_with"
-				|| rule.method === "validate_accepted";
+			return rule.method === "validate_required" ||
+				rule.method === "validate_required_with" ||
+				rule.method === "validate_accepted";
 
 		},
 
 		size : function( attribute, value ) {
 
-			if ( this.validate_numeric( attribute, value ) )
+			if ( this.validate_numeric( attribute, value ) ){
 				return value;
+			}
 
 			return value.length;
 		},
@@ -159,7 +161,7 @@
 				re = new RegExp( re );
 			}
 
-			return value.match( re ) != null;
+			return value.match( re ) !== null;
 
 		},
 
@@ -187,8 +189,8 @@
 
 		validate_accepted : function( attribute, value ) {
 
-			return this.validate_match( attribute, value, /^(yes|1)$/ )
-                || $( "[name=" + attribute + "]" ).is(":checked");
+			return this.validate_match( attribute, value, /^(yes|1)$/ ) ||
+				$( "[name=" + attribute + "]" ).is(":checked");
 
 		},
 
@@ -218,7 +220,7 @@
 
 		validate_size : function( attribute, value, parameters ) {
 
-			return this.size( attribute, value ) == parameters[0];
+			return this.size( attribute, value ) === parameters[0];
 
 		},
 
@@ -276,7 +278,7 @@
 				this.validate_between( attribute, segments[2], [ 0, 255 ] ) &&
 				this.validate_between( attribute, segments[3], [ 1, 255 ] ) )
 			{
-				return true;	
+				return true;
 			}
 
 			return false;
@@ -307,25 +309,25 @@
 
 		},
 
-		validate_alpha : function( attribute, value, parameters ) {
+		validate_alpha : function ( attribute, value, parameters ) {
 
 			return this.validate_match( attribute, value, /^([a-z])+$/i );
 
 		},
 
-		validate_alpha_num : function( attribute, value, parameters ) {
+		validate_alpha_num : function ( attribute, value, parameters ) {
 
 			return this.validate_match( attribute, value, /^([a-z0-9])+$/i );
 
 		},
 
-		validate_alpha_dash : function( attribute, value, parameters ) {
+		validate_alpha_dash : function ( attribute, value, parameters ) {
 
 			return this.validate_match( attribute, value, /^([-a-z0-9_-])+$/i );
 
 		},
 
-		validate_mimes : function( attribute, value, parameters ) {
+		validate_mimes : function ( attribute, value, parameters ) {
 
 			for ( var i = 0; i < parameters.length; i++ ) {
 				var re = new RegExp( '\\.' + parameters[i] + '$' );
@@ -349,7 +351,7 @@
 
 			return ( Date.parse( value ) > Date.parse( parameters[0] ) );
 
-		},
+		}
 
 	};
 
